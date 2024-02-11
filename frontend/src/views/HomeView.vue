@@ -1,7 +1,12 @@
 <template>
   <main class="content">
     <section class="desk">
-      <router-view :tasks="props.tasks" />
+      <router-view
+        :tasks="props.tasks"
+        @add-task="$emit('addTask', $event)"
+        @edit-task="$emit('editTask', $event)"
+        @delete-task="$emit('deleteTask', $event)"
+      />
       <!--Шапка доски-->
       <div class="desk__header">
         <h1 class="desk__title">Design Coffee Lab</h1>
@@ -70,8 +75,6 @@
 import { reactive } from "vue";
 import columns from "../mocks/columns.json";
 import users from "../mocks/users.json";
-// import rawTasks from "../mocks/tasks.json";
-// import { normalizeTask, getTagsArrayFromString } from "../common/helpers";
 import { STATUSES } from "../common/constants";
 import DeskColumn from "@/modules/columns/components/DeskColumn.vue";
 import { getImage } from "../common/helpers";
@@ -88,22 +91,15 @@ const props = defineProps({
   },
 });
 
-defineEmits(["applyFilters", "updateTasks"]);
+defineEmits([
+  "applyFilters",
+  "updateTasks",
+  "addTask",
+  "editTask",
+  "deleteTask",
+]);
 
 const state = reactive({ columns });
-
-// const normalizedTasks = rawTasks.map((task) => normalizeTask(task));
-// const columnTasks = normalizedTasks
-//   .filter(({ columnId }) => columnId)
-//   .reduce((accumulator, task) => {
-//     task.tags = getTagsArrayFromString(task.tags);
-//     if (accumulator[task.columnId]) {
-//       accumulator[task.columnId] = [...accumulator[task.columnId], task];
-//     } else {
-//       accumulator[task.columnId] = [task];
-//     }
-//     return accumulator;
-//   }, {});
 
 function addColumn() {
   state.columns.push({ id: uniqueId("column_"), title: "Новый столбец" });
