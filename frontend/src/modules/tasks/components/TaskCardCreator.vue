@@ -162,6 +162,9 @@ import TaskCardCreatorTags from "./TaskCardCreatorTags.vue";
 import { createUUIDv4, createNewDate } from "@/common/helpers";
 import { useTaskCardDate } from "@/common/composables";
 import { validateFields } from "@/common/validator";
+import { useTasksStore } from "@/stores/tasks";
+
+const tasksStore = useTasksStore();
 
 const router = useRouter();
 
@@ -171,8 +174,6 @@ const props = defineProps({
     default: null,
   },
 });
-
-const emits = defineEmits(["addTask", "editTask", "deleteTask"]);
 
 const taskToWork = props.taskToEdit
   ? cloneDeep(props.taskToEdit)
@@ -222,7 +223,7 @@ function setTags(tags) {
 }
 
 function deleteTask() {
-  emits("deleteTask", task.value.id);
+  tasksStore.deleteTask(task.value.id);
   router.push("/");
 }
 
@@ -297,10 +298,10 @@ function submit() {
   }
   if (props.taskToEdit) {
     // Редактируемая задача
-    emits("editTask", task.value);
+    tasksStore.editTask(task.value);
   } else {
     // Новая задача
-    emits("addTask", task.value);
+    tasksStore.addTask(task.value);
   }
   // Переход на главную страницу
   router.push("/");
